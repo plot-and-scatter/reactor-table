@@ -2,7 +2,7 @@
   "name": "@plot-and-scatter/reactor-table",
   "version": "0.1.0",
   "description": "A filterable, sortable table in React",
-  "main": "lib/reactor-table.js",
+  "main": "lib/reactor.js",
   "scripts": {
     "dev": "concurrently --kill-others \"npm run build-watch\" \"npm run watchify\" \"npm run demo-server\"",
     "build-watch": "babel -s inline -d lib -w src",
