@@ -134,7 +134,7 @@ class Table extends React.Component {
     })
 
     return (
-      <table className='ReactorTable'>
+      <table className={`ReactorTable ${this.props.tableClass}`}>
         <thead><tr>{columnHeaders}</tr></thead>
         <tbody>{rows}</tbody>
       </table>
