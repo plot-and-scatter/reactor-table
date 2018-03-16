@@ -20,8 +20,7 @@
   "keywords": [
     "plotandscatter",
     "react",
-    "d3",
-    "graphs"
+    "table"
   ],
   "author": "Frank Hangler <frank@plotandscatter.com> (http://plotandscatter.com)",
   "license": "ISC",
@@ -49,9 +48,7 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "d3": "^4.9.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
-  },
-  "false": {}
+  }
 }
