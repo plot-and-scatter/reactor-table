@@ -133,10 +133,22 @@ class Table extends React.Component {
       return <tr key={r.id || r.key}>{rowCells}</tr>
     })
 
+    const footerRows = this.props.totalRows
+      ? this.props.totalRow.map(r => {
+        const rowCells = []
+        this.state.columns.forEach((c, i) => {
+          const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
+          const key = `${r.key}-${i}`
+          rowCells.push(<td key={key} className={c.cellClass}>{value}</td>)
+        })
+      })
+      : null
+
     return (
       <table className={`ReactorTable ${this.props.tableClass ? this.props.tableClass : ''}`}>
         <thead><tr>{columnHeaders}</tr></thead>
         <tbody>{rows}</tbody>
+        { footerRows && <tfoot>{footerRows}</tfoot> }
       </table>
     )
   }
