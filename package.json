@@ -1,6 +1,6 @@
 {
   "name": "@plot-and-scatter/reactor-table",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A filterable, sortable table in React",
   "main": "lib/reactor.js",
   "scripts": {
