@@ -43,6 +43,8 @@ class App extends React.Component {
 
     const rows = this.state.data
 
+    const totalRow = [{ 'key': 15, 'name': 'TOTAL' }]
+
     return (
       <div>
         <h2>Reactor Table</h2>
@@ -50,6 +52,7 @@ class App extends React.Component {
           columns={columns}
           rows={rows}
           rowFilter={rowFilter}
+          totalRows={totalRow}
         />
       </div>
     )
