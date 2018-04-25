@@ -134,7 +134,7 @@ class Table extends React.Component {
     })
 
     const footerRows = this.props.totalRows
-      ? this.props.totalRow.map(r => {
+      ? this.props.totalRows.map(r => {
         const rowCells = []
         this.state.columns.forEach((c, i) => {
           const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
