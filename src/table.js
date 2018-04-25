@@ -38,9 +38,21 @@ class Table extends React.Component {
     if (this.props.rows.length !== this.state.rows.length) {
       const rows = this.props.rows
       this.setState({ rows, filteredRows: rows })
+      return
     }
     if (this.props.columns.length !== this.state.columns.length) {
       this.setState({ columns: this.props.columns })
+      return
+    }
+
+    // We shouldn't get an array out-of-bounds error here as we have already
+    // verified both arrays have the same length
+    const allKeysIdentical = this.state.rows.every((r, i) => {
+      return this.props.rows[i].key === r.key
+    })
+    if (!allKeysIdentical) {
+      const rows = this.props.rows
+      this.setState({ rows, filteredRows: rows })
     }
   }
 

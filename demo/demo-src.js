@@ -15,12 +15,16 @@ class App extends React.Component {
     this.refreshData()
   }
 
+  randomInt (max = 100) {
+    return Math.floor(Math.random() * Math.floor(max))
+  }
+
   refreshData () {
     const data = [
-      { 'key': 1, 'name': 'First' },
-      { 'key': 2, 'name': 'Second' },
-      { 'key': 3, 'name': 'Third' },
-      { 'key': 10, 'name': 'Tenth' }
+      { 'key': this.randomInt(), 'name': 'First' },
+      { 'key': this.randomInt(), 'name': 'Second' },
+      { 'key': this.randomInt(), 'name': 'Third' },
+      { 'key': this.randomInt(), 'name': 'Tenth' }
     ]
     this.setState({ data })
   }
@@ -47,6 +51,7 @@ class App extends React.Component {
 
     return (
       <div>
+        <button onClick={e => this.refreshData()}>Refresh data</button>
         <h2>Reactor Table</h2>
         <Reactor.Table
           columns={columns}
