@@ -47,8 +47,13 @@
     "prop-types": "^15.5.10",
     "watchify": "^3.11.0"
   },
+  "peerDependencies": {
+    "react": "16.x",
+    "react-dom": "16.x"
+  },
   "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "acorn": "^6.0.4",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0"
   }
 }
