@@ -6,7 +6,8 @@ const filter = (filter, filterAccessor, array) => {
       console.error('Reactor.Table: No filter accessor defined')
     } else {
       array = array.filter(c => {
-        return ('' + filterAccessor(c)).toLowerCase()
+        return ('' + filterAccessor(c))
+          .toLowerCase()
           .includes(filter.toLowerCase())
       })
     }
@@ -66,25 +67,28 @@ class Table extends React.Component {
     const accessor = column.accessor
     const bsColumnId = this.props.baseSortColumnId
 
-    const bsAccessor = bsColumnId && bsColumnId !== columnId
-      ? this.state.columns.filter(c => c.id === bsColumnId)[0].accessor
-      : (d) => ''
+    const bsAccessor =
+      bsColumnId && bsColumnId !== columnId
+        ? this.state.columns.filter(c => c.id === bsColumnId)[0].accessor
+        : d => ''
 
     const sortDirectionA = ascending ? -1 : 1
     const sortDirectionB = ascending ? 1 : -1
 
     filteredRows.sort((a, b) => {
-      return accessor(a) < accessor(b) ? sortDirectionA
-           : accessor(a) > accessor(b) ? sortDirectionB
-           : (
-                bsAccessor(a) < bsAccessor(b) ? -1
-              : bsAccessor(a) > bsAccessor(b) ? 1
+      return accessor(a) < accessor(b)
+        ? sortDirectionA
+        : accessor(a) > accessor(b)
+          ? sortDirectionB
+          : bsAccessor(a) < bsAccessor(b)
+            ? -1
+            : bsAccessor(a) > bsAccessor(b)
+              ? 1
               : 0
-             )
     })
 
     // Remove sort indicators on all other columns
-    columns.forEach(c => delete (c.sortedAsc))
+    columns.forEach(c => delete c.sortedAsc)
 
     column.sortedAsc = ascending
 
@@ -108,27 +112,33 @@ class Table extends React.Component {
 
   render () {
     const columnHeaders = this.state.columns.map(c => {
-      const caretClass = c.sortedAsc === true
-        ? 'sortable-asc'
-        : c.sortedAsc === false
-          ? 'sortable-desc'
-          : 'sortable'
+      const caretClass =
+        c.sortedAsc === true
+          ? 'sortable-asc'
+          : c.sortedAsc === false
+            ? 'sortable-desc'
+            : 'sortable'
       return (
         <th key={c.id} className={c.headerClass}>
-          <span className={caretClass} onClick={() => this._sortColumn(c.id, !c.sortedAsc)}>
+          <span
+            className={caretClass}
+            onClick={() => this._sortColumn(c.id, !c.sortedAsc)}
+          >
             {c.name}
           </span>
-          {c.filterable &&
+          {c.filterable && (
             <span>
               <br />
               <input
                 className={this.props.filterInputClass}
                 type='text'
                 placeholder='Filter'
-                onChange={(e) => this._filterColumnsOnChange(c.id, e.target.value)}
+                onChange={e =>
+                  this._filterColumnsOnChange(c.id, e.target.value)
+                }
               />
             </span>
-          }
+          )}
         </th>
       )
     })
@@ -139,8 +149,12 @@ class Table extends React.Component {
       const rowCells = []
       this.state.columns.forEach((c, i) => {
         const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
-        const key = `${r.key}-${i}`
-        rowCells.push(<td key={key} className={c.cellClass}>{value}</td>)
+        const key = c.keyGenerator ? c.keyGenerator(c, r, i) : `${r.key}-${i}`
+        rowCells.push(
+          <td key={key} className={c.cellClass}>
+            {value}
+          </td>
+        )
       })
       return <tr key={r.id || r.key}>{rowCells}</tr>
     })
@@ -152,17 +166,27 @@ class Table extends React.Component {
         this.state.columns.forEach((c, i) => {
           const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
           const key = `${r.key}-${i}`
-          rowCells.push(<td key={key} className={c.cellClass}>{value}</td>)
+          rowCells.push(
+            <td key={key} className={c.cellClass}>
+              {value}
+            </td>
+          )
         })
         return <tr key={r.id || r.key}>{rowCells}</tr>
       })
     }
 
     return (
-      <table className={`ReactorTable ${this.props.tableClass ? this.props.tableClass : ''}`}>
-        <thead><tr>{columnHeaders}</tr></thead>
+      <table
+        className={`ReactorTable ${
+          this.props.tableClass ? this.props.tableClass : ''
+        }`}
+      >
+        <thead>
+          <tr>{columnHeaders}</tr>
+        </thead>
         <tbody>{rows}</tbody>
-        { footerRows && <tfoot>{footerRows}</tfoot> }
+        {footerRows && <tfoot>{footerRows}</tfoot>}
       </table>
     )
   }
