@@ -1,5 +1,5 @@
-import Table from './table'
+import Table from './table';
 
 module.exports = {
-  Table
-}
+    Table
+};

@@ -1,82 +1,82 @@
-import React from 'react'
+import React from 'react';
 
 const filter = (filter, filterAccessor, array) => {
-  if (filter && filter.length > 0) {
-    if (!filterAccessor) {
-      console.error('Reactor.Table: No filter accessor defined')
-    } else {
-      array = array.filter(c => {
-        return ('' + filterAccessor(c))
+    if (filter && filter.length > 0) {
+        if (!filterAccessor) {
+            console.error('Reactor.Table: No filter accessor defined');
+        } else {
+            array = array.filter(c => {
+                return ('' + filterAccessor(c))
           .toLowerCase()
-          .includes(filter.toLowerCase())
-      })
+          .includes(filter.toLowerCase());
+            });
+        }
     }
-  }
-  return array
-}
+    return array;
+};
 
 class Table extends React.Component {
-  constructor () {
-    super()
-    this.state = {
-      rows: [],
-      filteredRows: [],
-      columns: []
+    constructor() {
+        super();
+        this.state = {
+            rows: [],
+            filteredRows: [],
+            columns: []
+        };
+        this._sortColumn = this._sortColumn.bind(this);
+        this._filterColumnsOnChange = this._filterColumnsOnChange.bind(this);
     }
-    this._sortColumn = this._sortColumn.bind(this)
-    this._filterColumnsOnChange = this._filterColumnsOnChange.bind(this)
-  }
 
-  componentDidMount () {
-    this.processData()
-  }
-
-  componentDidUpdate () {
-    this.processData()
-  }
-
-  processData () {
-    if (this.props.rows.length !== this.state.rows.length) {
-      const rows = this.props.rows
-      this.setState({ rows, filteredRows: rows })
-      return
+    componentDidMount() {
+        this.processData();
     }
-    if (this.props.columns.length !== this.state.columns.length) {
-      this.setState({ columns: this.props.columns })
-      return
+
+    componentDidUpdate() {
+        this.processData();
     }
+
+    processData() {
+        if (this.props.rows.length !== this.state.rows.length) {
+            const rows = this.props.rows;
+            this.setState({ rows, filteredRows: rows });
+            return;
+        }
+        if (this.props.columns.length !== this.state.columns.length) {
+            this.setState({ columns: this.props.columns });
+            return;
+        }
 
     // We shouldn't get an array out-of-bounds error here as we have already
     // verified both arrays have the same length
-    const allKeysIdentical = this.state.rows.every((r, i) => {
-      return this.props.rows[i].key === r.key
-    })
-    if (!allKeysIdentical) {
-      const rows = this.props.rows
-      this.setState({ rows, filteredRows: rows })
+        const allKeysIdentical = this.state.rows.every((r, i) => {
+            return this.props.rows[i].key === r.key;
+        });
+        if (!allKeysIdentical) {
+            const rows = this.props.rows;
+            this.setState({ rows, filteredRows: rows });
+        }
     }
-  }
 
-  _sortColumn (columnId, ascending = true) {
+    _sortColumn(columnId, ascending = true) {
     // Make copies so we don't edit in-place
-    const filteredRows = [...this.state.filteredRows]
-    const columns = [...this.state.columns]
+        const filteredRows = [...this.state.filteredRows];
+        const columns = [...this.state.columns];
 
-    const column = this.state.columns.filter(c => c.id === columnId)[0]
+        const column = this.state.columns.filter(c => c.id === columnId)[0];
 
-    const accessor = column.accessor
-    const bsColumnId = this.props.baseSortColumnId
+        const accessor = column.accessor;
+        const bsColumnId = this.props.baseSortColumnId;
 
-    const bsAccessor =
+        const bsAccessor =
       bsColumnId && bsColumnId !== columnId
         ? this.state.columns.filter(c => c.id === bsColumnId)[0].accessor
-        : d => ''
+        : d => '';
 
-    const sortDirectionA = ascending ? -1 : 1
-    const sortDirectionB = ascending ? 1 : -1
+        const sortDirectionA = ascending ? -1 : 1;
+        const sortDirectionB = ascending ? 1 : -1;
 
-    filteredRows.sort((a, b) => {
-      return accessor(a) < accessor(b)
+        filteredRows.sort((a, b) => {
+            return accessor(a) < accessor(b)
         ? sortDirectionA
         : accessor(a) > accessor(b)
           ? sortDirectionB
@@ -84,41 +84,41 @@ class Table extends React.Component {
             ? -1
             : bsAccessor(a) > bsAccessor(b)
               ? 1
-              : 0
-    })
+              : 0;
+        });
 
     // Remove sort indicators on all other columns
-    columns.forEach(c => delete c.sortedAsc)
+        columns.forEach(c => delete c.sortedAsc);
 
-    column.sortedAsc = ascending
+        column.sortedAsc = ascending;
 
-    this.setState({ filteredRows, columns })
-  }
+        this.setState({ filteredRows, columns });
+    }
 
-  _filterColumnsOnChange (columnId, filter) {
-    const columns = [...this.state.columns]
-    const column = columns.filter(c => c.id === columnId)[0]
-    column.filter = filter.length > 0 ? filter : null
-    this.setState({ columns }, () => this._filterColumns())
-  }
+    _filterColumnsOnChange(columnId, filter) {
+        const columns = [...this.state.columns];
+        const column = columns.filter(c => c.id === columnId)[0];
+        column.filter = filter.length > 0 ? filter : null;
+        this.setState({ columns }, () => this._filterColumns());
+    }
 
-  _filterColumns () {
-    let filteredRows = [...this.state.rows]
-    this.state.columns.forEach(c => {
-      filteredRows = filter(c.filter, c.accessor, filteredRows)
-    })
-    this.setState({ filteredRows })
-  }
+    _filterColumns() {
+        let filteredRows = [...this.state.rows];
+        this.state.columns.forEach(c => {
+            filteredRows = filter(c.filter, c.accessor, filteredRows);
+        });
+        this.setState({ filteredRows });
+    }
 
-  render () {
-    const columnHeaders = this.state.columns.map(c => {
-      const caretClass =
+    render() {
+        const columnHeaders = this.state.columns.map(c => {
+            const caretClass =
         c.sortedAsc === true
           ? 'sortable-asc'
           : c.sortedAsc === false
             ? 'sortable-desc'
-            : 'sortable'
-      return (
+            : 'sortable';
+            return (
         <th key={c.id} className={c.headerClass}>
           <span
             className={caretClass}
@@ -140,43 +140,43 @@ class Table extends React.Component {
             </span>
           )}
         </th>
-      )
-    })
+            );
+        });
 
-    const filteredRows = this.state.filteredRows.filter(this.props.rowFilter)
+        const filteredRows = this.state.filteredRows.filter(this.props.rowFilter);
 
-    const rows = filteredRows.map(r => {
-      const rowCells = []
-      this.state.columns.forEach((c, i) => {
-        const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
-        const key = c.keyGenerator ? c.keyGenerator(c, r, i) : `${r.key}-${i}`
-        rowCells.push(
+        const rows = filteredRows.map(r => {
+            const rowCells = [];
+            this.state.columns.forEach((c, i) => {
+                const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r);
+                const key = c.keyGenerator ? c.keyGenerator(c, r, i) : `${r.key}-${i}`;
+                rowCells.push(
           <td key={key} className={c.cellClass}>
             {value}
           </td>
-        )
-      })
-      return <tr key={r.id || r.key}>{rowCells}</tr>
-    })
+        );
+            });
+            return <tr key={r.id || r.key}>{rowCells}</tr>;
+        });
 
-    let footerRows = null
-    if (this.props.totalRows) {
-      footerRows = this.props.totalRows.map(r => {
-        const rowCells = []
-        this.state.columns.forEach((c, i) => {
-          const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r)
-          const key = `${r.key}-${i}`
-          rowCells.push(
+        let footerRows = null;
+        if (this.props.totalRows) {
+            footerRows = this.props.totalRows.map(r => {
+                const rowCells = [];
+                this.state.columns.forEach((c, i) => {
+                    const value = c.displayAccessor ? c.displayAccessor(r) : c.accessor(r);
+                    const key = `${r.key}-${i}`;
+                    rowCells.push(
             <td key={key} className={c.cellClass}>
               {value}
             </td>
-          )
-        })
-        return <tr key={r.id || r.key}>{rowCells}</tr>
-      })
-    }
+          );
+                });
+                return <tr key={r.id || r.key}>{rowCells}</tr>;
+            });
+        }
 
-    return (
+        return (
       <table
         className={`ReactorTable ${
           this.props.tableClass ? this.props.tableClass : ''
@@ -188,8 +188,8 @@ class Table extends React.Component {
         <tbody>{rows}</tbody>
         {footerRows && <tfoot>{footerRows}</tfoot>}
       </table>
-    )
-  }
+        );
+    }
 }
 
-module.exports = Table
+module.exports = Table;
